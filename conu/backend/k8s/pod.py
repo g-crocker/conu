@@ -47,7 +47,7 @@ class Pod(object):
 
             * https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/V1PodSpec.md
         :param from_template: str, pod template, example:
-        
+
             * https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/#pod-templates
         """
         self.core_api = get_core_api()
@@ -59,7 +59,7 @@ class Pod(object):
                                 ' with name or spec')
         elif from_template is not None:  # create Pod from template
             try:
-                pod_instance = self.core_api.create_namespaced_pod(namespace=namespace,
+                pod_instance = self.core_api().create_namespaced_pod(namespace=namespace,
                                                                    body=from_template)
             except ApiException as e:
                 raise ConuException(
@@ -86,7 +86,7 @@ class Pod(object):
         body = client.V1DeleteOptions()
 
         try:
-            status = self.core_api.delete_namespaced_pod(self.name, self.namespace, body)
+            status = self.core_api().delete_namespaced_pod(self.name, self.namespace, body)
             logger.info("Deleting Pod %s in namespace %s", self.name, self.namespace)
             self.phase = PodPhase.TERMINATING
         except ApiException as e:
@@ -104,7 +104,7 @@ class Pod(object):
         https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/V1PodStatus.md
         """
         try:
-            api_response = self.core_api.read_namespaced_pod_status(self.name, self.namespace)
+            api_response = self.core_api().read_namespaced_pod_status(self.name, self.namespace)
         except ApiException as e:
             raise ConuException(
                 "Exception when calling Kubernetes API - read_namespaced_pod_status: %s\n" % e)
@@ -125,7 +125,7 @@ class Pod(object):
         :return: str or None
         """
         try:
-            api_response = self.core_api.read_namespaced_pod_log(self.name, self.namespace)
+            api_response = self.core_api().read_namespaced_pod_log(self.name, self.namespace)
             logger.debug("Logs from pod: %s in namespace: %s", self.name, self.namespace)
             for line in api_response.split('\n'):
                 logger.debug(line)

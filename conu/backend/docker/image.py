@@ -625,7 +625,7 @@ class DockerImage(Image):
         pod = Pod.create(image_data)
 
         try:
-            pod_instance = core_api.create_namespaced_pod(namespace=namespace, body=pod)
+            pod_instance = core_api().create_namespaced_pod(namespace=namespace, body=pod)
         except ApiException as e:
             raise ConuException("Exception when calling CoreV1Api->create_namespaced_pod: %s\n" % e)
 

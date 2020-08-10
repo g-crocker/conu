@@ -268,7 +268,7 @@ class TestK8s(object):
 
         # take just namespaces that are not in terminating state
         number_of_namespaces = len(
-            [item for item in api.list_namespace().items if item.status.phase != "Terminating"])
+            [item for item in api().list_namespace().items if item.status.phase != "Terminating"])
 
         api_key = get_oc_api_token()
         with K8sBackend(api_key=api_key, cleanup=[K8sCleanupPolicy.NAMESPACES]) as k8s_backend:
@@ -279,7 +279,7 @@ class TestK8s(object):
 
         # cleanup should delete two namespaces created with k8s backend
         assert len(
-            [item for item in api.list_namespace().items
+            [item for item in api().list_namespace().items
              if item.status.phase != "Terminating"]) == number_of_namespaces
 
         with K8sBackend(api_key=api_key) as k8s_backend:
@@ -290,5 +290,5 @@ class TestK8s(object):
 
         # no cleanup - namespaces are not deleted after work with backend is finished
         assert len(
-            [item for item in api.list_namespace().items
+            [item for item in api().list_namespace().items
              if item.status.phase != "Terminating"]) == number_of_namespaces + 2

@@ -69,7 +69,7 @@ class Service(object):
         body = client.V1DeleteOptions()
 
         try:
-            status = self.api.delete_namespaced_service(self.name, self.namespace, body)
+            status = self.api().delete_namespaced_service(self.name, self.namespace, body)
 
             logger.info(
                 "Deleting Service %s in namespace: %s", self.name, self.namespace)
@@ -88,7 +88,7 @@ class Service(object):
         """
 
         try:
-            api_response = self.api.read_namespaced_service_status(self.name, self.namespace)
+            api_response = self.api().read_namespaced_service_status(self.name, self.namespace)
         except ApiException as e:
             raise ConuException(
                 "Exception when calling Kubernetes API - read_namespaced_service_status: %s\n" % e)
@@ -110,7 +110,7 @@ class Service(object):
         :return: None
         """
         try:
-            self.api.create_namespaced_service(self.namespace, self.body)
+            self.api().create_namespaced_service(self.namespace, self.body)
         except ApiException as e:
             raise ConuException(
                 "Exception when calling Kubernetes API - create_namespaced_service: {}\n".format(e))

@@ -77,10 +77,10 @@ class K8sBackend(Backend):
 
         if namespace:
             return [Pod(name=p.metadata.name, namespace=namespace, spec=p.spec)
-                    for p in self.core_api.list_namespaced_pod(namespace, watch=False).items]
+                    for p in self.core_api().list_namespaced_pod(namespace, watch=False).items]
 
         return [Pod(name=p.metadata.name, namespace=p.metadata.namespace, spec=p.spec)
-                for p in self.core_api.list_pod_for_all_namespaces(watch=False).items]
+                for p in self.core_api().list_pod_for_all_namespaces(watch=False).items]
 
     def list_services(self, namespace=None):
         """
@@ -95,13 +95,13 @@ class K8sBackend(Backend):
                             ports=k8s_ports_to_metadata_ports(s.spec.ports),
                             namespace=s.metadata.namespace,
                             labels=s.metadata.labels, selector=s.spec.selector, spec=s.spec)
-                    for s in self.core_api.list_namespaced_service(namespace, watch=False).items]
+                    for s in self.core_api().list_namespaced_service(namespace, watch=False).items]
 
         return [Service(name=s.metadata.name,
                         ports=k8s_ports_to_metadata_ports(s.spec.ports),
                         namespace=s.metadata.namespace,
                         labels=s.metadata.labels, selector=s.spec.selector, spec=s.spec)
-                for s in self.core_api.list_service_for_all_namespaces(watch=False).items]
+                for s in self.core_api().list_service_for_all_namespaces(watch=False).items]
 
     def list_deployments(self, namespace=None):
         """
@@ -117,14 +117,14 @@ class K8sBackend(Backend):
                                labels=d.metadata.labels, selector=d.spec.selector,
                                image_metadata=ImageMetadata(
                                    name=d.spec.template.spec.containers[0].name.split("-", 1)[0]))
-                    for d in self.apps_api.list_namespaced_deployment(namespace, watch=False).items]
+                    for d in self.apps_api().list_namespaced_deployment(namespace, watch=False).items]
 
         return [Deployment(name=d.metadata.name,
                            namespace=d.metadata.namespace,
                            labels=d.metadata.labels, selector=d.spec.selector,
                            image_metadata=ImageMetadata(
                                name=d.spec.template.spec.containers[0].name.split("-", 1)[0]))
-                for d in self.apps_api.list_deployment_for_all_namespaces(watch=False).items]
+                for d in self.apps_api().list_deployment_for_all_namespaces(watch=False).items]
 
     def create_namespace(self):
         """
@@ -135,7 +135,7 @@ class K8sBackend(Backend):
 
         namespace = client.V1Namespace(metadata=client.V1ObjectMeta(name=name))
 
-        self.core_api.create_namespace(namespace)
+        self.core_api().create_namespace(namespace)
 
         logger.info("Creating namespace: %s", name)
 
@@ -155,7 +155,7 @@ class K8sBackend(Backend):
         :return: bool
         """
         try:
-            secrets = self.core_api.list_namespaced_secret(namespace=namespace)
+            secrets = self.core_api().list_namespaced_secret(namespace=namespace)
             if len(secrets.items) > 0:
                 # API tokens for service accounts are generated
                 logger.info("Namespace is ready!")
@@ -172,7 +172,7 @@ class K8sBackend(Backend):
         :param name: str, namespace to delete
         :return: None
         """
-        self.core_api.delete_namespace(name, client.V1DeleteOptions())
+        self.core_api().delete_namespace(name, client.V1DeleteOptions())
 
         logger.info("Deleting namespace: %s", name)
 

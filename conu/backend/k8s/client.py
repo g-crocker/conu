@@ -42,9 +42,8 @@ def get_core_api():
             configuration = client.Configuration()
             configuration.api_key['authorization'] = API_KEY
             configuration.api_key_prefix['authorization'] = 'Bearer'
-            core_api = client.CoreV1Api(client.ApiClient(configuration))
-        else:
-            core_api = client.CoreV1Api()
+            client.Configuration.set_default(configuration)
+        core_api = client.CoreV1Api
 
     return core_api
 
@@ -64,8 +63,7 @@ def get_apps_api():
             configuration = client.Configuration()
             configuration.api_key['authorization'] = API_KEY
             configuration.api_key_prefix['authorization'] = 'Bearer'
-            apps_api = client.AppsV1Api(client.ApiClient(configuration))
-        else:
-            apps_api = client.AppsV1Api()
+            client.Configuration.set_default(configuration)
+        apps_api = client.AppsV1Api
 
     return apps_api

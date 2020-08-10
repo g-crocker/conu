@@ -97,7 +97,7 @@ class Deployment(object):
         body = client.V1DeleteOptions()
 
         try:
-            status = self.api.delete_namespaced_deployment(self.name, self.namespace, body)
+            status = self.api().delete_namespaced_deployment(self.name, self.namespace, body)
 
             logger.info("Deleting Deployment %s in namespace: %s", self.name, self.namespace)
         except ApiException as e:
@@ -113,7 +113,7 @@ class Deployment(object):
         :return: V1DeploymentStatus, https://git.io/vhKE3
         """
         try:
-            api_response = self.api.read_namespaced_deployment_status(self.name, self.namespace)
+            api_response = self.api().read_namespaced_deployment_status(self.name, self.namespace)
         except ApiException as e:
             raise ConuException(
                 "Exception when calling Kubernetes API - "
@@ -151,7 +151,7 @@ class Deployment(object):
         :return: None
         """
         try:
-            self.api.create_namespaced_deployment(self.namespace, self.body)
+            self.api().create_namespaced_deployment(self.namespace, self.body)
         except ApiException as e:
             raise ConuException(
                 "Exception when calling Kubernetes API - create_namespaced_deployment: %s\n" % e)
